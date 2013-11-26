@@ -11,29 +11,31 @@
 
 ## Overview
 
-This feature allows you to support In-App Purchases. Currently, only the Apple iTunes Store and the Google Play Marketplace are supported. In the future, other storefronts may be added.
+This feature allows you to support In-App Purchases.
 
 For more information see the [In-App Purchases (IAP)][guide.monetization.IAP] guide.
 
 
 ## Functions
 
-#### [store.availableStores][api.library.store.availableStores]
+#### [store.canLoadProducts][plugin.google-iap-v3.canLoadProducts]
 
-#### [store.canLoadProducts][api.library.store.canLoadProducts]
+#### [store.canMakePurchases][plugin.google-iap-v3.canMakePurchases]
 
-#### [store.canMakePurchases][api.library.store.canMakePurchases]
+#### [store.canMakePurchases][plugin.google-iap-v3.canMakePurchases]
 
-#### [store.finishTransaction()][api.library.store.finishTransaction]
+#### [store.consumePurchase][plugin.google-iap-v3.consumePurchase]
 
-#### [store.init()][api.library.store.init]
+#### [store.finishTransaction()][plugin.google-iap-v3.finishTransaction]
 
-#### [store.isActive][api.library.store.isActive]
+#### [store.init()][plugin.google-iap-v3.init]
 
-#### [store.loadProducts()][api.library.store.loadProducts]
+#### [store.isActive][plugin.google-iap-v3.isActive]
 
-#### [store.purchase()][api.library.store.purchase]
+#### [store.loadProducts()][plugin.google-iap-v3.loadProducts]
 
-#### [store.restore()][api.library.store.restore]
+#### [store.purchase()][plugin.google-iap-v3.purchase]
 
-#### [store.target][api.library.store.target]
+#### [store.restore()][plugin.google-iap-v3.restore]
+
+#### [store.target][plugin.google-iap-v3.target]

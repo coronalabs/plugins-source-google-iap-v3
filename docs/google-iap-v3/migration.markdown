@@ -12,7 +12,6 @@ store.consumePurchase() - This will mark the item as consumed.  Consumed product
 ## What's Different
 store.loadProducts() now returns a list of all the products.  In Google IAP v2 this did not work.
 store.purchase() takes a single product instead of an array of products.
-All functions now take a listener as the last parameter instead of using the listener in init.
 
 ## What's Removed
 store.finishTransaction() - noop

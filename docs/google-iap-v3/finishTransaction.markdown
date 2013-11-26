@@ -14,16 +14,14 @@
 
 ## Overview
 
-Notifies the Apple iTunes Store that a transaction is complete.
-
-After you finish handling a transaction, you must call `store.finishTransaction()` on the transaction object. If you don't do this, the Apple iTunes Store will think your transaction was interrupted and will attempt to resume it on the next application launch.
+No-op.  This call does nothing and is here to help with cross platform compatibility.
 
 
 ## Syntax
 
 	store.finishTransaction( transaction )
 
-##### transaction ~^(required)^~
+##### transaction ~^(optional)^~
 The transaction object belonging to the transaction you want to mark as finished.
 
 

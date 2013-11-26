@@ -44,9 +44,9 @@ local function productCallback( event )
     for i=1, #event.products do
         print(event.products[i].title)    -- This is a string.
         print(event.products[i].description)    -- This is a string.
-        print(event.products[i].localizedPrice)    -- This is a string.
+        print(event.products[i].localizedPrice)    -- This is a string.  ex. $1.23
         print(event.products[i].productIdentifier)    -- This is a string.
-        print(event.products[i].type)    -- This is a string.
+        print(event.products[i].type)    -- This is a string.  It can be "inapp" for an in-app product or "subs" for subscriptions
     end
 
     print("showing invalidProducts", #event.invalidProducts)

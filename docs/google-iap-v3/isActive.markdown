@@ -14,7 +14,7 @@
 
 ## Overview
 
-Used to confirm that a store is properly initialized after calling [store.init()][api.library.store.init]. This returns `true` if the store has successfully initialized. Currently, it will return `false` on a Corona app built for Amazon or Nook.
+Used to confirm that a store is properly initialized after calling [store.init()][api.library.store.init]. This returns `true` if the store has successfully initialized.
 
 ## Syntax
 

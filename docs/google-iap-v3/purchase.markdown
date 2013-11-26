@@ -25,14 +25,11 @@ This function will send out a purchase request to the store.  This function does
 ##### productSku ~^(required)^~
 _[String][api.type.String]._ A Lua array specifying the products you want to buy. Each element may contain a string which is the product identifier or a Lua table with the same fields as the product elements passed back to you from the [event.products][api.event.productList.products] array in the `loadProductsCallback` listener.
 
-##### listener ~^(required)^~
-_[Listener][api.type.Listener]._ A callback function that is invoked when the store finishes retrieving the product information.
-
 ## Example
 
 `````lua
 local store = require("store")
- 
+
 function storeTransaction( event )
     local transaction = event.transaction
     if transaction.state == "purchased" then
@@ -65,5 +62,5 @@ end
  
 store.init( storeTransaction )
  
-store.purchase( "com.coronalabs.NewExampleInAppPurchase.NonConsumableTier1", storeTransaction )
+store.purchase( "com.coronalabs.NewExampleInAppPurchase.NonConsumableTier1" )
 `````

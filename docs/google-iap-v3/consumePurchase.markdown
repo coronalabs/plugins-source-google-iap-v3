@@ -14,47 +14,57 @@
 
 ## Overview
 
-This will consume the purchase and make the item available for purchase again.
+This will consume the purchase and make the item available for purchase again.  Managed items that have been purchased but not consumed can not be purchased again.  The transaction event state will be `consumed`.  There will be no callbacks for invalid products.
 
 ## Syntax
 
 	store.consumePurchase( productSku, listener )
 
 ##### productSku ~^(required)^~
-_[String][api.type.String]._ A Lua array with each element containing a string which is the product identifier of the in-app item you want to consume
-
-##### listener ~^(required)^~
-_[Listener][api.type.Listener]._ A callback function that is invoked when the store finishes retrieving the product information.
+_[Array][api.type.Array]._ A Lua array with each element containing a string which is the product identifier of the in-app item you want to consume
 
 ## Example
 
 `````lua
 local store = require "store"
-
-local listOfProducts = 
-{
-    "com.coronalabs.NewExampleInAppPurchase.ConsumableTier1",
-    "com.coronalabs.NewExampleInAppPurchase.NonConsumableTier1",
-    "com.coronalabs.NewExampleInAppPurchase.SubscriptionTier1",
---  "bad.product.id",
-}
  
-local function productCallback( event )
-    print("showing valid products", #event.products)
-    for i=1, #event.products do
-        print(event.products[i].title)    -- This is a string.
-        print(event.products[i].description)    -- This is a string.
-        print(event.products[i].price)    -- This is a number.
-        print(event.products[i].localizedPrice)    -- This is a string.
-        print(event.products[i].productIdentifier)    -- This is a string.
+function transactionCallback( event )
+    local transaction = event.transaction
+    if transaction.state == "purchased" then
+        print("Transaction succuessful!")
+
+    elseif transaction.state == "restored" then
+
+       print("Transaction restored")
+
+    elseif transaction.state == "consumed" then
+
+        print("Transaction consumed")
+        print("productIdentifier", transaction.productIdentifier)
+        print("receipt", transaction.receipt)
+        print("transactionIdentifier", transaction.identifier)
+        print("date", transaction.date)
+        print("originalReceipt", transaction.originalReceipt)
+        print("originalTransactionIdentifier", transaction.originalIdentifier)
+        print("originalDate", transaction.originalDate)
+
+    elseif transaction.state == "cancelled" then
+        print("User cancelled transaction")
+
+    elseif transaction.state == "failed" then
+        print("Transaction failed, type:", transaction.errorType, transaction.errorString)
+
+    else
+        print("unknown event")
     end
 
-    print("showing invalidProducts", #event.invalidProducts)
-    for i=1, #event.invalidProducts do
-		print(event.invalidProducts[i])
-    end
+    -- Once we are done with a transaction, call this to tell the store
+    -- we are done with the transaction.
+    -- If you are providing downloadable content, wait to call this until
+    -- after the download completes.
+    store.finishTransaction( transaction )
 end
-if store.canLoadProducts then
-    store.loadProducts( listOfProducts, productCallback )
-end
+ 
+store.init( transactionCallback )
+store.consumePurchase( {"manangedItem1", "managedItem2"} )
 `````

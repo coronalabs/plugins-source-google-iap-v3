@@ -27,7 +27,7 @@ iOS devices have a setting that disables purchasing. A common case for this is t
 
 `````lua
 if store.canMakePurchases then
-    store.purchase( listOfProducts )
+    store.purchase( productSku )
 else
     print("Store purchases are not available")
 end
