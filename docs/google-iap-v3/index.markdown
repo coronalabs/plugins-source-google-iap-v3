@@ -7,11 +7,12 @@
 > __Keywords__          store
 > __Sample code__       */CoronaSDK/SampleCode/Store/InAppPurchase*
 > __See also__          
+> __Availability__      Basic, Pro, Enterprise
 > --------------------- ------------------------------------------------------------------------------------------
 
 ## Overview
 
-This feature allows you to support In-App Purchases.
+This feature allows you to support In-App Purchases using Google's in app billing version 3.
 
 For more information see the [In-App Purchases (IAP)][guide.monetization.IAP] guide.
 
@@ -38,4 +39,17 @@ For more information see the [In-App Purchases (IAP)][guide.monetization.IAP] gu
 
 #### [store.restore()][plugin.google-iap-v3.restore]
 
-#### [store.target][plugin.google-iap-v3.target]
+``````
+settings =
+{
+	plugins =
+	{
+		-- key is the name passed to Lua's 'require()'
+		["plugin.google.iap.v3"] =
+		{
+			-- required
+			publisherId = "com.coronalabs",
+		},
+	},
+}
+``````
