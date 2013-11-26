@@ -39,6 +39,14 @@ For more information see the [In-App Purchases (IAP)][guide.monetization.IAP] gu
 
 #### [store.restore()][plugin.google-iap-v3.restore]
 
+## Migration
+
+#### [Migration][plugin.google-iap-v3.migration]
+
+## build.settings
+
+The following build.settings section is required to for Google in app billing version 3.
+
 ``````
 settings =
 {
