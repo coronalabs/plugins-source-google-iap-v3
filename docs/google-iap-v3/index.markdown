@@ -23,9 +23,7 @@ For more information see the [In-App Purchases (IAP)][guide.monetization.IAP] gu
 
 #### [store.canMakePurchases][plugin.google-iap-v3.canMakePurchases]
 
-#### [store.canMakePurchases][plugin.google-iap-v3.canMakePurchases]
-
-#### [store.consumePurchase][plugin.google-iap-v3.consumePurchase]
+#### [store.consumePurchase()][plugin.google-iap-v3.consumePurchase]
 
 #### [store.finishTransaction()][plugin.google-iap-v3.finishTransaction]
 
@@ -61,3 +59,19 @@ settings =
 	},
 }
 ``````
+
+## config.lua
+
+The following config.lua section is required for Google in app billing version 3.  The key is obtained from the Google Play Developers Console under All applications>Your App>Services & APIs>LICENSING & IN-APP BILLING
+
+``````
+application = 
+{
+	license =
+	{
+		google =
+		{
+			key = "Your key here",
+		},
+	},
+}

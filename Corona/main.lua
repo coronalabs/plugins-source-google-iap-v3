@@ -48,9 +48,9 @@ end
 
 function listenerTable:init(event)
 	print("isError: ", event.isError)
-	store.purchase(products[1])
+	-- store.purchase(products[1])
 	-- store.consumePurchase(products)
-	-- store.loadProducts( products, subscriptionProducts, listenerTable )
+	store.loadProducts( products, subscriptionProducts, listenerTable )
 	-- store.purchaseSubscription(subscriptionProducts)
 	-- store.restore()
 end

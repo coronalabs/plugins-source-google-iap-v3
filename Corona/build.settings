@@ -12,7 +12,7 @@ settings =
 	plugins =
 	{
 		-- key is the name passed to Lua's 'require()'
-		["CoronaProvider.gameNetwork.google"] =
+		["plugin.google.iap.v3"] =
 		{
 			-- required
 			publisherId = "com.coronalabs",
