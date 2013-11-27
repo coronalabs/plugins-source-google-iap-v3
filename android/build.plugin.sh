@@ -102,9 +102,6 @@ checkError
 JAR_PATH=$path/bin/${PLUGIN_NAME}.jar
 if [ -f "$JAR_PATH" ]
 then
-	# Remove non-plugin related code
-	zip -d "$JAR_PATH" "com/*"
-
 	echo "SUCCESS: Plugin binary is located at: '$JAR_PATH'"
 else
 	echo "ERROR: Could not create '$JAR_PATH'"
