@@ -117,6 +117,10 @@ public class LuaLoader implements JavaFunction {
 		}
 		L.pop(1);
 		
+		if (L.type(listenerIndex) == LuaType.STRING) {
+			listenerIndex++;
+		}
+
 		fListener = CoronaLua.REFNIL;
 		if (CoronaLua.isListener(L, listenerIndex, "storeTransaction")) {
 			fListener = CoronaLua.newRef(L, listenerIndex);
@@ -144,22 +148,7 @@ public class LuaLoader implements JavaFunction {
 							L.pushBoolean(fHelper.subscriptionsSupported());
 							L.setField(-2, "canPurchaseSubscriptions");
 
-							L.pop(1);
-
-							// try {
-							// 	CoronaLua.newEvent( L, "init");
-
-							// 	L.pushBoolean(finalResult.isFailure());
-							// 	L.setField(-2, "isError");
-
-							// 	// Dispatch event table at top of stack
-							// 	CoronaLua.dispatchEvent(L, fListener, 0);
-							// }
-							// catch (Exception ex) {
-							// 	ex.printStackTrace();
-							// }
-							
-							
+							L.pop(1);						
 						}
 					};
 					fDispatcher.send(runtimeTask);
