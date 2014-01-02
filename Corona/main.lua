@@ -56,3 +56,4 @@ function listenerTable:init(event)
 end
 
 store.init(listenerTable)
+print("asdf")

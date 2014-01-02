@@ -26,7 +26,7 @@ _[String][api.type.String]._ A Lua array specifying the products you want to buy
 ## Example
 
 `````lua
-local store = require("store")
+local store = require("plugin.google.iap.v3")
  
 function storeTransaction( event )
     local transaction = event.transaction

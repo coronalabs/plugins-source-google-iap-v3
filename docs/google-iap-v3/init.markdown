@@ -52,7 +52,7 @@ settings =
 ## Example
 
 `````lua
-local store = require("store")
+local store = require("plugin.google.iap.v3")
  
 function transactionCallback( event )
     local transaction = event.transaction

@@ -29,7 +29,7 @@ _[Listener][api.type.Listener]._ A callback function that is invoked when the st
 ## Example
 
 `````lua
-local store = require "store"
+local store = require("plugin.google.iap.v3")
 
 local listOfProducts = 
 {

@@ -26,7 +26,7 @@ _[Array][api.type.Array]._ A Lua array with each element containing a string whi
 ## Example
 
 `````lua
-local store = require "store"
+local store = require("plugin.google.iap.v3")
  
 function transactionCallback( event )
     local transaction = event.transaction

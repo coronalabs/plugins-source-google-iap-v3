@@ -7,6 +7,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -121,6 +122,8 @@ public class LuaLoader implements JavaFunction {
 			fListener = CoronaLua.newRef(L, listenerIndex);
 		}
 
+		final AtomicBoolean syncObject = new AtomicBoolean(true);
+
 		Context context = CoronaEnvironment.getApplicationContext();
 		if (licenseKey.length() > 0 && context != null) {
 			fHelper = new IabHelper(context, licenseKey);
@@ -143,25 +146,37 @@ public class LuaLoader implements JavaFunction {
 
 							L.pop(1);
 
-							try {
-								CoronaLua.newEvent( L, "init");
+							// try {
+							// 	CoronaLua.newEvent( L, "init");
 
-								L.pushBoolean(finalResult.isFailure());
-								L.setField(-2, "isError");
+							// 	L.pushBoolean(finalResult.isFailure());
+							// 	L.setField(-2, "isError");
 
-								// Dispatch event table at top of stack
-								CoronaLua.dispatchEvent(L, fListener, 0);
-							}
-							catch (Exception ex) {
-								ex.printStackTrace();
-							}
+							// 	// Dispatch event table at top of stack
+							// 	CoronaLua.dispatchEvent(L, fListener, 0);
+							// }
+							// catch (Exception ex) {
+							// 	ex.printStackTrace();
+							// }
+							
+							
 						}
 					};
 					fDispatcher.send(runtimeTask);
+					synchronized(syncObject) {
+						syncObject.set(false);
+						syncObject.notifyAll();
+					}
 				}
 			});
 		}
-
+		synchronized(syncObject) {
+			while(syncObject.get()) {
+				try {
+					syncObject.wait();
+				} catch (java.lang.InterruptedException e) {}
+			}
+		}
 		return 0;
 	}
 

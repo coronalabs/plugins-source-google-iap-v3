@@ -10,6 +10,7 @@
 * store.consumePurchase() - This will mark the item as consumed.  Consumed products can be purchased again.  An example of a item that should be consumable is a 5 minute power up.  An example of a item that shouldn't be consumed is to unlock a level.
 
 ## What's Different
+* Instead of require("store"), to use this plugin you call require("plugin.google.iap.v3").
 * store.loadProducts() now returns a list of all the products.  In Google IAP v2 this did not work.
 * store.purchase() takes a single product instead of an array of products.
 * store.finishTransaction() - This function is not needed anymore.

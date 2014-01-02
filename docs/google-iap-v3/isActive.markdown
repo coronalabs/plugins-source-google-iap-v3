@@ -23,7 +23,7 @@ Used to confirm that a store is properly initialized after calling [store.init()
 ## Example
 
 ``````lua
-local store = require "store"
+local store = require("plugin.google.iap.v3")
 
 store.init( storeTransaction )
 

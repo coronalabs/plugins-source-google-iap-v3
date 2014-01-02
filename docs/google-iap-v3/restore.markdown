@@ -29,7 +29,7 @@ In the Google Play Marketplace, there is no `"restored"` state for items. All pu
 ## Example
 
 `````lua
-local store = require "store"
+local store = require("plugin.google.iap.v3")
  
 function transactionCallback( event )
     local transaction = event.transaction

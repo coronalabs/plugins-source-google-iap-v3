@@ -76,3 +76,15 @@ application =
 	},
 }
 ``````
+
+## requiring
+
+The folling is how to require the plugin
+
+``````
+local store = require("store")
+if store.target == "google" then
+	store = require("plugin.google.iap.v3")
+end
+
+``````

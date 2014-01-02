@@ -23,7 +23,7 @@ This should be called before [store.loadProducts()][api.library.store.loadProduc
 ## Example
 
 `````lua
-local store = require "store"
+local store = require("plugin.google.iap.v3")
 
 local listOfProducts = 
 {
