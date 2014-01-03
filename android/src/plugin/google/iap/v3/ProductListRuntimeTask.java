@@ -77,21 +77,28 @@ public class ProductListRuntimeTask implements CoronaRuntimeTask {
 			}
 			L.setField(-2, "products");
 
-			Iterator<String> iterator = fManagedProducts.iterator();
-			L.newTable();
-			count = 1;
-			while(iterator.hasNext()) {
-				L.pushString(iterator.next());
-				L.rawSet(-2, count);
-				count++;
+			Iterator<String> iterator;
+			if (fManagedProducts != null) {
+				iterator = fManagedProducts.iterator();
+				L.newTable();
+				count = 1;
+				while(iterator.hasNext()) {
+					L.pushString(iterator.next());
+					L.rawSet(-2, count);
+					count++;
+				}
 			}
+
 			
-			iterator = fSubscriptionProducts.iterator();
-			while(iterator.hasNext()) {
-				L.pushString(iterator.next());
-				L.rawSet(-2, count);
-				count++;
+			if (fSubscriptionProducts != null) {
+				iterator = fSubscriptionProducts.iterator();
+				while(iterator.hasNext()) {
+					L.pushString(iterator.next());
+					L.rawSet(-2, count);
+					count++;
+				}
 			}
+
 			L.setField(-2, "invalidProducts");
 
 

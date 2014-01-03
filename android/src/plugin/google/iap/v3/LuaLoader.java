@@ -231,7 +231,7 @@ public class LuaLoader implements JavaFunction {
 				List<Purchase> allPurchases = inv.getAllPurchases();
 				Iterator<Purchase> iterator = allPurchases.iterator();
 				while (iterator.hasNext()) {
-					fDispatcher.send(new StoreTransactionRuntimeTask(iterator.next(), fListener));
+					fDispatcher.send(new StoreTransactionRuntimeTask(iterator.next(), result, fListener));
 				}
 			}
 		});
@@ -352,12 +352,17 @@ public class LuaLoader implements JavaFunction {
 				fHelper.consumeAsync(purchasesToConsume, new IabHelper.OnConsumeMultiFinishedListener() {
 					public void onConsumeMultiFinished(final List<Purchase> purchases, final List<IabResult> results) {
 						Iterator<Purchase> iterator = purchases.iterator();
+						Iterator<IabResult> resultsIterator = results.iterator();
 						StoreTransactionRuntimeTask task;
 
-						while (iterator.hasNext()) {
-							Purchase purchase = iterator.next();
+						Purchase purchase;
+						IabResult result;
+						while (iterator.hasNext() && resultsIterator.hasNext()) {
+							purchase = iterator.next();
+							result = resultsIterator.next();
+
 							purchase.setPurchaseState(Purchase.State.Consumed);
-							task = new StoreTransactionRuntimeTask(purchase, fListener);
+							task = new StoreTransactionRuntimeTask(purchase, result, fListener);
 							fDispatcher.send(task);
 						}
 					}

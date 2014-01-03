@@ -18,9 +18,12 @@ Google IAP v3 supports the loading of product information that you've entered in
 
 ## Syntax
 
-	store.loadProducts( productIdentifiers, listener )
+	store.loadProducts( productIdentifiers, subscriptionProductIdentifiers, listener )
 
 ##### productIdentifiers ~^(required)^~
+_[Array][api.type.Array]._ A Lua array with each element containing a string which is the product identifier of the in-app item you want to know about.
+
+##### subscriptionProductIdentifiers ~^(optional)^~
 _[Array][api.type.Array]._ A Lua array with each element containing a string which is the product identifier of the in-app item you want to know about.
 
 ##### listener ~^(required)^~
@@ -35,10 +38,16 @@ local listOfProducts =
 {
     "com.coronalabs.NewExampleInAppPurchase.ConsumableTier1",
     "com.coronalabs.NewExampleInAppPurchase.NonConsumableTier1",
-    "com.coronalabs.NewExampleInAppPurchase.SubscriptionTier1",
 --  "bad.product.id",
 }
  
+local listOfSubscriptions = 
+{
+    "com.coronalabs.NewExampleInAppPurchase.SubscriptionTier1",
+    "com.coronalabs.NewExampleInAppPurchase.SubscriptionTier2",
+--  "bad.product.id",
+}
+
 local function productCallback( event )
     print("showing valid products", #event.products)
     for i=1, #event.products do
@@ -56,4 +65,5 @@ local function productCallback( event )
 end
  
 store.loadProducts( listOfProducts, productCallback )
+-- store.loadProducts( listOfProducts, listOfSubscriptions, productCallback )
 `````

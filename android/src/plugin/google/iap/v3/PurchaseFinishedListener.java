@@ -38,7 +38,7 @@ public class PurchaseFinishedListener implements IabHelper.OnIabPurchaseFinished
 
 	@Override
 	public void onIabPurchaseFinished(IabResult result, Purchase info) {
-		StoreTransactionRuntimeTask task = new StoreTransactionRuntimeTask(info, fListener);
+		StoreTransactionRuntimeTask task = new StoreTransactionRuntimeTask(info, result, fListener);
 		// Send the above task to the Corona runtime asynchronously.
 		// The send() method will do nothing if the Corona runtime is no longer available, which can
 		// happen if the runtime was disposed/destroyed after the user has exited the Corona activity.

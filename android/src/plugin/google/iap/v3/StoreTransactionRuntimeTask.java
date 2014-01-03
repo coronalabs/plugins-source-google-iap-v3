@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import plugin.google.iap.v3.util.IabResult;
 import plugin.google.iap.v3.util.Purchase;
 
 import com.naef.jnlua.LuaState;
@@ -29,10 +30,12 @@ public class StoreTransactionRuntimeTask implements CoronaRuntimeTask {
 
 	private Purchase fPurchase;
 	private int fListener;
+	private IabResult fResult;
 
-	public StoreTransactionRuntimeTask(Purchase purchase, int listener) {
+	public StoreTransactionRuntimeTask(Purchase purchase, IabResult result, int listener) {
 		fPurchase = purchase;
 		fListener = listener;
+		fResult = result;
 	}
 
 	@Override
@@ -46,53 +49,65 @@ public class StoreTransactionRuntimeTask implements CoronaRuntimeTask {
 		try {
 			CoronaLua.newEvent( L, "storeTransaction");
 
-			L.newTable();
+			if (fResult.isFailure()) {
+				L.pushBoolean(true);
+				L.setField(-2, "isError");
 
-			L.pushString(fPurchase.getItemType());
-			L.setField(-2, "type");
-			
-			L.pushString(fPurchase.getOrderId());
-			L.setField(-2, "identifier");
-			
-			L.pushString(fPurchase.getPackageName());
-			L.setField(-2, "packageName");
-			
-			L.pushString(fPurchase.getSku());
-			L.setField(-2, "productIdentifier");
-			
-			L.pushNumber(fPurchase.getPurchaseTime());
-			L.setField(-2, "date");
+				L.pushNumber(fResult.getResponse());
+				L.setField(-2, "errorType");
 
-			String state = null;
-			switch(fPurchase.getPurchaseState()) {
-				case Purchased: 
-					state = "purchased";
-					break;
-				case Cancelled: 
-					state = "cancelled";
-					break;
-				case Refunded: 
-					state = "refunded";
-					break;
-				case Consumed: 
-					state = "consumed";
-					break;
-				default: 
-					state = "unknown";
+				L.pushString(fResult.getMessage());
+				L.setField(-2, "errorString");
+
+			} else {
+				L.newTable();
+
+				L.pushString(fPurchase.getItemType());
+				L.setField(-2, "type");
+				
+				L.pushString(fPurchase.getOrderId());
+				L.setField(-2, "identifier");
+				
+				L.pushString(fPurchase.getPackageName());
+				L.setField(-2, "packageName");
+				
+				L.pushString(fPurchase.getSku());
+				L.setField(-2, "productIdentifier");
+				
+				L.pushNumber(fPurchase.getPurchaseTime());
+				L.setField(-2, "date");
+
+				String state = null;
+				switch(fPurchase.getPurchaseState()) {
+					case Purchased: 
+						state = "purchased";
+						break;
+					case Cancelled: 
+						state = "cancelled";
+						break;
+					case Refunded: 
+						state = "refunded";
+						break;
+					case Consumed: 
+						state = "consumed";
+						break;
+					default: 
+						state = "unknown";
+				}
+				L.pushString(state);
+				L.setField(-2, "state");
+
+				L.pushString(fPurchase.getToken());
+				L.setField(-2, "token");
+
+				L.pushString(fPurchase.getOriginalJson());
+				L.setField(-2, "originalJson");
+
+				L.pushString(fPurchase.getSignature());
+				L.setField(-2, "signature");
+
+				L.setField(-2, "transaction");
 			}
-			L.pushString(state);
-			L.setField(-2, "state");
-
-			L.pushString(fPurchase.getToken());
-			L.setField(-2, "token");
-
-			L.pushString(fPurchase.getOriginalJson());
-			L.setField(-2, "originalJson");
-
-			L.pushString(fPurchase.getSignature());
-			L.setField(-2, "signature");
-
-			L.setField(-2, "transaction");
 
 			// Dispatch event table at top of stack
 			CoronaLua.dispatchEvent(L, fListener, 0);
