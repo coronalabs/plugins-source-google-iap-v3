@@ -49,6 +49,7 @@ public class StoreTransactionRuntimeTask implements CoronaRuntimeTask {
 		try {
 			CoronaLua.newEvent( L, "storeTransaction");
 
+			L.newTable();
 			if (fResult.isFailure()) {
 				L.pushBoolean(true);
 				L.setField(-2, "isError");
@@ -58,10 +59,7 @@ public class StoreTransactionRuntimeTask implements CoronaRuntimeTask {
 
 				L.pushString(fResult.getMessage());
 				L.setField(-2, "errorString");
-
 			} else {
-				L.newTable();
-
 				L.pushString(fPurchase.getItemType());
 				L.setField(-2, "type");
 				
@@ -105,10 +103,10 @@ public class StoreTransactionRuntimeTask implements CoronaRuntimeTask {
 
 				L.pushString(fPurchase.getSignature());
 				L.setField(-2, "signature");
-
-				L.setField(-2, "transaction");
 			}
 
+			L.setField(-2, "transaction");
+			
 			// Dispatch event table at top of stack
 			CoronaLua.dispatchEvent(L, fListener, 0);
 		}
