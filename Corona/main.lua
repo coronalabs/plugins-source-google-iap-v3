@@ -49,7 +49,7 @@ end
 store.init(listenerTable)
 
 -- print("pre-loadProducts")
--- store.loadProducts( products, listenerTable )
+store.loadProducts( products, listenerTable )
 -- print("post-loadProducts")
 
-store.purchase( products[1] )
+-- store.purchase( products[1] )

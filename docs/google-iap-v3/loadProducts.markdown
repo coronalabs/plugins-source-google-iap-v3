@@ -49,6 +49,12 @@ local listOfSubscriptions =
 }
 
 local function productCallback( event )
+    if event.isError then
+        print(event.errorType)
+        print(event.errorString)
+        return
+    end
+    
     print("showing valid products", #event.products)
     for i=1, #event.products do
         print(event.products[i].title)    -- This is a string.

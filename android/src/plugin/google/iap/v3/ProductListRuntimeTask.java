@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import plugin.google.iap.v3.util.IabResult;
 import plugin.google.iap.v3.util.Inventory;
 import plugin.google.iap.v3.util.Purchase;
 import plugin.google.iap.v3.util.SkuDetails;
@@ -32,13 +33,14 @@ public class ProductListRuntimeTask implements CoronaRuntimeTask {
 
 	private Inventory fInventory;
 	private int fListener;
+	private IabResult fResult;
 	private HashSet<String> fManagedProducts;
 	private HashSet<String> fSubscriptionProducts;
 
-	public ProductListRuntimeTask(Inventory inventory, HashSet<String> managedProducts, HashSet<String> subscriptionProducts, int listener) {
+	public ProductListRuntimeTask(Inventory inventory, HashSet<String> managedProducts, HashSet<String> subscriptionProducts, IabResult result, int listener) {
 		fInventory = inventory;
 		fListener = listener;
-
+		fResult = result;
 		fManagedProducts = managedProducts;
 		fSubscriptionProducts = subscriptionProducts;
 	}
@@ -49,57 +51,68 @@ public class ProductListRuntimeTask implements CoronaRuntimeTask {
 			return;
 		}
 
-		Collection<SkuDetails> allSkuDetails = fInventory.getAllSkuDetails();
-		Iterator<SkuDetails> skuDetailsIterator = allSkuDetails.iterator();
-
 		// *** We are now running on the Corona runtime thread. ***
 		// Fetch the Corona runtime's Lua state.
 		LuaState L = runtime.getLuaState();
 		try {
-
 			CoronaLua.newEvent( L, "productList");
 
-			L.newTable();
-			int count = 1;
-			while(skuDetailsIterator.hasNext()) {
-				L.newTable();
-				SkuDetails skuDetails = skuDetailsIterator.next();
-				skuDetails.pushToLua(L, -2);
-				L.rawSet(-2, count);
-				count++;
+			if (fResult.isFailure()) {
+				L.pushBoolean(true);
+				L.setField(-2, "isError");
 
+				L.pushNumber(fResult.getResponse());
+				L.setField(-2, "errorType");
+
+				L.pushString(fResult.getMessage());
+				L.setField(-2, "errorString");
+			} else {
+				L.newTable();
+
+				Collection<SkuDetails> allSkuDetails = fInventory.getAllSkuDetails();
+				Iterator<SkuDetails> skuDetailsIterator = allSkuDetails.iterator();
+
+				int count = 1;
+				while(skuDetailsIterator.hasNext()) {
+					L.newTable();
+					SkuDetails skuDetails = skuDetailsIterator.next();
+					skuDetails.pushToLua(L, -2);
+					L.rawSet(-2, count);
+					count++;
+
+					if (fManagedProducts != null) {
+						fManagedProducts.remove(skuDetails.getSku());
+					}
+					if (fSubscriptionProducts != null) {
+						fSubscriptionProducts.remove(skuDetails.getSku());
+					}
+				}
+				L.setField(-2, "products");
+
+				Iterator<String> iterator;
 				if (fManagedProducts != null) {
-					fManagedProducts.remove(skuDetails.getSku());
+					iterator = fManagedProducts.iterator();
+					L.newTable();
+					count = 1;
+					while(iterator.hasNext()) {
+						L.pushString(iterator.next());
+						L.rawSet(-2, count);
+						count++;
+					}
 				}
+
+				
 				if (fSubscriptionProducts != null) {
-					fSubscriptionProducts.remove(skuDetails.getSku());
+					iterator = fSubscriptionProducts.iterator();
+					while(iterator.hasNext()) {
+						L.pushString(iterator.next());
+						L.rawSet(-2, count);
+						count++;
+					}
 				}
-			}
-			L.setField(-2, "products");
 
-			Iterator<String> iterator;
-			if (fManagedProducts != null) {
-				iterator = fManagedProducts.iterator();
-				L.newTable();
-				count = 1;
-				while(iterator.hasNext()) {
-					L.pushString(iterator.next());
-					L.rawSet(-2, count);
-					count++;
-				}
+				L.setField(-2, "invalidProducts");
 			}
-
-			
-			if (fSubscriptionProducts != null) {
-				iterator = fSubscriptionProducts.iterator();
-				while(iterator.hasNext()) {
-					L.pushString(iterator.next());
-					L.rawSet(-2, count);
-					count++;
-				}
-			}
-
-			L.setField(-2, "invalidProducts");
 
 
 			// Dispatch event table at top of stack

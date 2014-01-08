@@ -215,7 +215,7 @@ public class LuaLoader implements JavaFunction {
 		fHelper.queryInventoryAsync(true, managedProducts, finalSubscriptionProducts, new IabHelper.QueryInventoryFinishedListener() {
 			@Override
 			public void onQueryInventoryFinished(IabResult result, Inventory inv) {
-				ProductListRuntimeTask task = new ProductListRuntimeTask(inv, managedProducts, finalSubscriptionProducts, listener);
+				ProductListRuntimeTask task = new ProductListRuntimeTask(inv, managedProducts, finalSubscriptionProducts, result, listener);
 				fDispatcher.send(task);
 			}
 		});
@@ -339,6 +339,11 @@ public class LuaLoader implements JavaFunction {
 		fHelper.queryInventoryAsync(true, null, null, new IabHelper.QueryInventoryFinishedListener() {
 			@Override
 			public void onQueryInventoryFinished(IabResult result, Inventory inv) {
+				if (result.isFailure()) {
+					StoreTransactionRuntimeTask task = new StoreTransactionRuntimeTask(null, result, fListener);
+					fDispatcher.send(task);
+				}
+
 				ArrayList<Purchase> purchasesToConsume = new ArrayList<Purchase>(consumedProducts.size());
 				Iterator<String> skuIterator = consumedProducts.iterator();
 
