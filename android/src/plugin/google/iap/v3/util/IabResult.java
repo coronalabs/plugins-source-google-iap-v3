@@ -31,10 +31,12 @@ public class IabResult {
         mResponse = response;
         if (message == null || message.trim().length() == 0) {
             mMessage = IabHelper.getResponseDesc(response);
+
         }
         else {
             mMessage = message + " (response: " + IabHelper.getResponseDesc(response) + ")";
         }
+        android.util.Log.d("dchan", mMessage);
     }
     public int getResponse() { return mResponse; }
     public String getMessage() { return mMessage; }

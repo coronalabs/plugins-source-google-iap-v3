@@ -15,6 +15,14 @@ local subscriptionProducts = {
 
 local listenerTable = {}
 function listenerTable:productList(event)
+	print("isActive3: ", store.isActive)
+	if event.isError then
+        print(event.errorType)
+        print(event.errorString)
+        return
+    end
+
+
 	print("validProduct")
 	for i = 1, #event.products do
 		print("--------------------------------------------------------------------")
@@ -35,6 +43,9 @@ end
 function listenerTable:storeTransaction(event)
 	print(event.name)
 	print("--------------------------------------------------------------------")
+	print("errorType: ", event.transaction.errorType)
+	print("errorString: ", event.transaction.errorString)
+	print("--------------------------------------------------------------------")
 	print("type: ", event.transaction.type)
 	print("identifier: ", event.transaction.identifier)
 	print("packageName: ", event.transaction.packageName)
@@ -45,9 +56,9 @@ function listenerTable:storeTransaction(event)
 	print("originalJson: ", event.transaction.originalJson)
 	print("signature: ", event.transaction.signature)
 end
-
+print("isActive1: ", store.isActive)
 store.init(listenerTable)
-
+print("isActive2: ", store.isActive)
 -- print("pre-loadProducts")
 store.loadProducts( products, listenerTable )
 -- print("post-loadProducts")
