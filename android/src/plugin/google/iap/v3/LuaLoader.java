@@ -36,6 +36,7 @@ public class LuaLoader implements JavaFunction {
 	private int fListener;
 	private IabHelper fHelper;
 	private CoronaRuntimeTaskDispatcher fDispatcher;
+	private boolean fSetupSuccessful;
 
 	/**
 	 * Creates a new object for displaying banner ads on the CoronaActivity
@@ -48,12 +49,18 @@ public class LuaLoader implements JavaFunction {
 		}
 	}
 
+	private boolean initSuccessful() {
+		return fHelper != null && fSetupSuccessful;
+	}
+
 	/**
 	 * Warning! This method is not called on the main UI thread.
 	 */
 	@Override
 	public int invoke(LuaState L) {
 		fDispatcher = new CoronaRuntimeTaskDispatcher( L );
+
+		fSetupSuccessful = false;
 
 		// Add functions to library
 		NamedJavaFunction[] luaFunctions = new NamedJavaFunction[] {
@@ -136,11 +143,11 @@ public class LuaLoader implements JavaFunction {
 			fHelper.enableDebugLogging(true);
 			fHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
 				public void onIabSetupFinished(IabResult result) {
-					final IabResult finalResult = result;
+					fSetupSuccessful = result.isSuccess();
 
 					luaState.rawGet(LuaState.REGISTRYINDEX, fLibRef);
 
-					luaState.pushBoolean(finalResult.isSuccess());
+					luaState.pushBoolean(result.isSuccess());
 					luaState.setField(-2, "isActive");
 
 					luaState.pushBoolean(fHelper.subscriptionsSupported());
@@ -166,7 +173,7 @@ public class LuaLoader implements JavaFunction {
 	}
 
 	private int loadProducts(LuaState L) {
-		if (fHelper == null) {
+		if (!initSuccessful()) {
 			Log.w("Corona", "Please call init before trying to load products.");
 			return 0;
 		}
@@ -221,6 +228,11 @@ public class LuaLoader implements JavaFunction {
 
 
 	private int restore(LuaState L) {
+		if (!initSuccessful()) {
+			Log.w("Corona", "Please call init before trying to restore products.");
+			return 0;
+		}
+
 		fHelper.queryInventoryAsync(false, null, null, new IabHelper.QueryInventoryFinishedListener() {
 			@Override
 			public void onQueryInventoryFinished(IabResult result, Inventory inv) {
@@ -235,7 +247,7 @@ public class LuaLoader implements JavaFunction {
 	}
 
 	private int purchaseSubscription(LuaState L) {
-		if (fHelper == null) {
+		if (!initSuccessful()) {
 			Log.w("Corona", "Please call init before trying to purchase products.");
 			return 0;
 		}
@@ -270,7 +282,7 @@ public class LuaLoader implements JavaFunction {
 	}
 
 	private int purchase(LuaState L) {
-		if (fHelper == null) {
+		if (!initSuccessful()) {
 			Log.w("Corona", "Please call init before trying to purchase products.");
 			return 0;
 		}
@@ -305,8 +317,8 @@ public class LuaLoader implements JavaFunction {
 	}
 
 	private int consumePurchase(LuaState L) {
-		if (fHelper == null) {
-			Log.w("Corona", "Please call init before trying to load products.");
+		if (!initSuccessful()) {
+			Log.w("Corona", "Please call init before trying to consume products.");
 			return 0;
 		}
 
