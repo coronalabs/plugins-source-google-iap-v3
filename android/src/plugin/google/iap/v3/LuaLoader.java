@@ -126,6 +126,8 @@ public class LuaLoader implements JavaFunction {
 			fListener = CoronaLua.newRef(L, listenerIndex);
 		}
 
+		final LuaState luaState = L;
+
 		final AtomicBoolean syncObject = new AtomicBoolean(true);
 
 		Context context = CoronaEnvironment.getApplicationContext();
@@ -135,23 +137,17 @@ public class LuaLoader implements JavaFunction {
 			fHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
 				public void onIabSetupFinished(IabResult result) {
 					final IabResult finalResult = result;
-					CoronaRuntimeTask runtimeTask = new CoronaRuntimeTask() {
-						@Override
-						public void executeUsing(CoronaRuntime runtime) {
-							LuaState L = runtime.getLuaState();
-							// Set the various fields of the store object which we didn't know that status of when it was created but not inited yet
-							L.rawGet(LuaState.REGISTRYINDEX, fLibRef);
 
-							L.pushBoolean(finalResult.isSuccess());
-							L.setField(-2, "isActive");
+					luaState.rawGet(LuaState.REGISTRYINDEX, fLibRef);
 
-							L.pushBoolean(fHelper.subscriptionsSupported());
-							L.setField(-2, "canPurchaseSubscriptions");
+					luaState.pushBoolean(finalResult.isSuccess());
+					luaState.setField(-2, "isActive");
 
-							L.pop(1);						
-						}
-					};
-					fDispatcher.send(runtimeTask);
+					luaState.pushBoolean(fHelper.subscriptionsSupported());
+					luaState.setField(-2, "canPurchaseSubscriptions");
+
+					luaState.pop(1);
+
 					synchronized(syncObject) {
 						syncObject.set(false);
 						syncObject.notifyAll();
