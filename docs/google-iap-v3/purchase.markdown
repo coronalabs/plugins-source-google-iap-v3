@@ -46,7 +46,7 @@ function storeTransaction( event )
     elseif transaction.state == "cancelled" then
         print("User cancelled transaction")
 
-    elseif transaction.state == "failed" then
+    elseif transaction.state == "failed" or transaction.isError then
         print("Transaction failed, type:", transaction.errorType, transaction.errorString)
 
     else

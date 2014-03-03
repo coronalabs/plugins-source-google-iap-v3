@@ -47,6 +47,7 @@ public class StoreTransactionRuntimeTask implements CoronaRuntimeTask {
 		// *** We are now running on the Corona runtime thread. ***
 		LuaState L = runtime.getLuaState();
 		try {
+			String state = "";
 			CoronaLua.newEvent( L, "storeTransaction");
 
 			L.newTable();
@@ -59,6 +60,8 @@ public class StoreTransactionRuntimeTask implements CoronaRuntimeTask {
 
 				L.pushString(fResult.getMessage());
 				L.setField(-2, "errorString");
+
+				state = "failed";
 			} else {
 				L.pushString(fPurchase.getItemType());
 				L.setField(-2, "type");
@@ -75,7 +78,6 @@ public class StoreTransactionRuntimeTask implements CoronaRuntimeTask {
 				L.pushNumber(fPurchase.getPurchaseTime());
 				L.setField(-2, "date");
 
-				String state = null;
 				switch(fPurchase.getPurchaseState()) {
 					case Purchased: 
 						state = "purchased";
@@ -92,8 +94,6 @@ public class StoreTransactionRuntimeTask implements CoronaRuntimeTask {
 					default: 
 						state = "unknown";
 				}
-				L.pushString(state);
-				L.setField(-2, "state");
 
 				L.pushString(fPurchase.getToken());
 				L.setField(-2, "token");
@@ -104,6 +104,9 @@ public class StoreTransactionRuntimeTask implements CoronaRuntimeTask {
 				L.pushString(fPurchase.getSignature());
 				L.setField(-2, "signature");
 			}
+
+			L.pushString(state);
+			L.setField(-2, "state");
 
 			L.setField(-2, "transaction");
 			
