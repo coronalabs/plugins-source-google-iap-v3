@@ -3,61 +3,59 @@
 
 > --------------------- ------------------------------------------------------------------------------------------
 > __Type__              [Function][api.type.Function]
-> __Library__           [store.*][api.library.store]
+> __Library__           [store.*][plugin.google-iap-v3]
 > __Return value__      none
 > __Revision__          [REVISION_LABEL](REVISION_URL)
-> __Keywords__          store, purchase, iap, in app purchase
-> __Sample code__       */CoronaSDK/SampleCode/Store/InAppPurchase*
-> __See also__          [event.products][api.event.productList.products]<br/>[store.canMakePurchases][api.library.store.canMakePurchases]<br/>[api.library.store.init()][api.library.store.init]
+> __Keywords__          store, IAP, Google IAP v3, purchase
+> __See also__          [store.canLoadProducts][plugin.google-iap-v3.canLoadProducts]
+>								[store.loadProducts][plugin.google-iap-v3.loadProducts]
+>								[store.init()][plugin.google-iap-v3.init]
 > --------------------- ------------------------------------------------------------------------------------------
 
 
 ## Overview
 
-Initiates a purchase transaction on a provided product.
+Initiates a purchase transaction on a provided product by sending out a purchase request to the store. This call does not work for subscription purchases.
 
-This function will send out a purchase request to the store.  This function does not work for subscriptions.
 
 ## Syntax
 
-	store.purchase( productSku )
+	store.purchase( productID )
 
-##### productSku ~^(required)^~
-_[String][api.type.String]._ A Lua array specifying the products you want to buy. Each element may contain a string which is the product identifier or a Lua table with the same fields as the product elements passed back to you from the [event.products][api.event.productList.products] array in the `loadProductsCallback` listener.
+##### productID ~^(required)^~
+_[String][api.type.String]._ String representing the product identifier of the item to purchase.
+
 
 ## Example
 
 `````lua
-local store = require("plugin.google.iap.v3")
+local store = require( "plugin.google.iap.v3" )
 
 function storeTransaction( event )
-    local transaction = event.transaction
-    if transaction.state == "purchased" then
-        -- If store.purchase() was successful, you should end up in here for each product you buy.
-        print("Transaction succuessful!")
-        print("productIdentifier", transaction.productIdentifier)
-        print("receipt", transaction.receipt)
-        print("transactionIdentifier", transaction.identifier)
-        print("date", transaction.date)
 
-    elseif  transaction.state == "restored" then
-        print("Transaction restored (from previous session)")
+	local transaction = event.transaction
 
-    elseif transaction.state == "cancelled" then
-        print("User cancelled transaction")
+	if ( transaction.state == "purchased" ) then
+		-- Information about a successful purchase
+		print( "Transaction succuessful!" )
+		print( "product identifier", transaction.productIdentifier )
+		print( "receipt", transaction.receipt )
+		print( "transaction identifier", transaction.identifier )
+		print( "date", transaction.date )
 
-    elseif transaction.state == "failed" or transaction.isError then
-        print("Transaction failed, type:", transaction.errorType, transaction.errorString)
+	elseif ( transaction.state == "restored" ) then
+		print( "Transaction restored from previous session." )
 
-    else
-        print("unknown event")
-    end
+	elseif ( transaction.state == "cancelled" ) then
+		print( "User cancelled transaction." )
 
-    -- Once we are done with a transaction, call this to tell the store
-    -- we are done with the transaction.
-    -- If you are providing downloadable content, wait to call this until
-    -- after the download completes.
-    store.finishTransaction( transaction )
+	elseif transaction.state == "failed" or transaction.isError then
+		print( "Transaction failed:", transaction.errorType, transaction.errorString )
+
+	else
+		print( "(unknown event)" )
+	end
+
 end
  
 store.init( storeTransaction )
