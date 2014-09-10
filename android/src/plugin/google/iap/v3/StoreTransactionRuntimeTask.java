@@ -101,6 +101,9 @@ public class StoreTransactionRuntimeTask implements CoronaRuntimeTask {
 				L.pushString(fPurchase.getOriginalJson());
 				L.setField(-2, "originalJson");
 
+				L.pushString(fPurchase.getOriginalJson());
+				L.setField(-2, "receipt");
+
 				L.pushString(fPurchase.getSignature());
 				L.setField(-2, "signature");
 			}
