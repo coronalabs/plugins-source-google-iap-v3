@@ -1,23 +1,27 @@
-# Google IAP 2.0 Migration Guide
+# Google IAP v3 Migration Guide
 
-## What's New
+The following is an overview of the differences between Google&nbsp;IAP&nbsp;v2, implemented via Corona's [store][api.library.store] library, and Google&nbsp;IAP&nbsp;v3, implemented via the v3 [plugin][plugin.google-iap-v3].
 
-### Subscriptions
-* store.canPurchaseSubscriptions
-* store.purchaseSubscription() - Starts the purchase flow for a single subscription.
+## Additions
 
-### Consumables
-* store.consumePurchase() - This will mark the item as consumed.  Consumed products can be purchased again.  An example of a item that should be consumable is a 5 minute power up.  An example of a item that shouldn't be consumed is to unlock a level.
+* [store.consumePurchase()][plugin.google-iap-v3.consumePurchase] &mdash; This will consume purchases and make the items available for purchase again. In Google&nbsp;IAP&nbsp;v3, once a product is purchased, it is considered "owned" and it cannot be purchased again. Thus, you must send a consumption request to revert "owned" products to "unowned" products so they become available for purchase again. Consuming products also discards their previous purchase data.
 
-## What's Different
-* Instead of require("store"), to use this plugin you call require("plugin.google.iap.v3").
-* store.loadProducts() now returns a list of all the products.  In Google IAP v2 this did not work.
-* store.purchase() takes a single product instead of an array of products.
-* store.finishTransaction() - This function is not needed anymore.
+## Differences
 
-## Events
-* store.purchase() - Transaction event
-* store.purchaseSubscription() - Transaction event
-* store.consumePurchase() - One transaction event for each item
-* store.restore() - One transactin event for each item
-* store.loadProducts() Product list event
+* Instead of `require( "store" )`, use `require( "plugin.google.iap.v3" )`.
+
+* [store.loadProducts()][plugin.google-iap-v3.loadProducts] now returns a list of all products.
+
+* [store.purchase()][plugin.google-iap-v3.purchase] takes a single product identifier instead of a product array.
+
+* [store.finishTransaction()][plugin.google-iap-v3.finishTransaction] is not necessary or operational.
+
+## Transaction Events
+
+* [store.purchase()][plugin.google-iap-v3.purchase] &mdash; Callback function receives one transaction event as `event.transaction`.
+
+* [store.consumePurchase()][plugin.google-iap-v3.consumePurchase] &mdash; One transaction event occurs for each item.
+
+* [store.restore()][plugin.google-iap-v3.restore] &mdash; One transaction event occurs for each item.
+
+* [store.loadProducts()][plugin.google-iap-v3.loadProducts] &mdash; Callback function receives an array of valid products (`event.products`) and an array of invalid products (`event.invalidProducts`).
