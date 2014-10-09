@@ -30,11 +30,7 @@ function transactionCallback( event )
 	local transaction = event.transaction
 	 
 	if ( transaction.state == "purchased" ) then
-		print( "Transaction succuessful!" )
 
-	elseif ( transaction.state == "restored" ) then
-
-		print( "Transaction restored from previous session." )
 		print( "product identifier", transaction.productIdentifier )
 		print( "receipt", transaction.receipt )
 		print( "transaction identifier", transaction.identifier )

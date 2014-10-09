@@ -43,9 +43,6 @@ function storeTransaction( event )
 		print( "transaction identifier", transaction.identifier )
 		print( "date", transaction.date )
 
-	elseif ( transaction.state == "restored" ) then
-		print( "Transaction restored from previous session." )
-
 	elseif ( transaction.state == "cancelled" ) then
 		print( "User cancelled transaction." )
 

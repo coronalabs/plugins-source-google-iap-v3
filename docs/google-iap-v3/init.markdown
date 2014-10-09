@@ -45,9 +45,6 @@ function transactionCallback( event )
 	if ( transaction.state == "purchased" ) then
 		print( "Transaction succuessful!" )
 
-	elseif ( transaction.state == "restored" ) then
-		print( "Transaction restored from previous session." )
-
 	elseif ( transaction.state == "consumed" ) then
 
 		print( "Transaction consumed:" )

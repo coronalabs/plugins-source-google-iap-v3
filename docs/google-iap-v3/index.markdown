@@ -6,6 +6,7 @@
 > __Revision__          [REVISION_LABEL](REVISION_URL)
 > __Keywords__          store, IAP, Google IAP v3
 > __Availability__      Basic, Pro, Enterprise
+> __Platforms__			Android
 > --------------------- ------------------------------------------------------------------------------------------
 
 ## Overview
