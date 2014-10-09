@@ -1,10 +1,13 @@
 local store = require("plugin.google.iap.v3")
 
 local products = {
-	"managed.product.1",
-	"managed.product.2",
-	"m3",
-	"bad managed data"
+	"valid1",
+	"invalid1",
+	"asdfasdf",
+	"android.test.purchased"
+	-- "managed.product.2",
+	-- "m3",
+	-- "bad managed data"
 }
 
 local subscriptionProducts = {
@@ -31,6 +34,9 @@ function listenerTable:productList(event)
         print("localizedPrice: ", event.products[i].localizedPrice)    -- This is a string.
         print("productIdentifier: ", event.products[i].productIdentifier)    -- This is a string.
         print("type: ", event.products[i].type)    -- This is a string.
+        print("priceAmountMicros: ", event.products[i].priceAmountMicros)
+        print("priceCurrencyCode: ", event.products[i].priceCurrencyCode)
+        print("originalJson: ", event.products[i].originalJson)
     end
 
     print("--------------------------------------------------------------------")

@@ -140,7 +140,6 @@ public class LuaLoader implements JavaFunction {
 		Context context = CoronaEnvironment.getApplicationContext();
 		if (licenseKey.length() > 0 && context != null) {
 			fHelper = new IabHelper(context, licenseKey);
-			fHelper.enableDebugLogging(true);
 			fHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
 				public void onIabSetupFinished(IabResult result) {
 					fSetupSuccessful = result.isSuccess();

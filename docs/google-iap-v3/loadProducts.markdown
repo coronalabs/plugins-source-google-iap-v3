@@ -54,6 +54,9 @@ local function productCallback( event )
 		print( event.products[i].localizedPrice )     --string
 		print( event.products[i].productIdentifier )  --string
 		print( event.products[i].type )               --string
+		print( event.products[i].priceAmountMicros )  --string
+        print( event.products[i].priceCurrencyCode )  --string
+        print( event.products[i].originalJson )       --string
 	end
 
 	print( "Showing invalid products:", #event.invalidProducts )

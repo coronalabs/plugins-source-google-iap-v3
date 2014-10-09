@@ -11,7 +11,7 @@ application =
 	{
 		google =
 		{
-			key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhPZxAJU0PCihjUziGtGzlC1JgmLqAP/sa77LYLjW7wq7783mPwBLlmJSWUJJraWk5Z9yjbyDLpLuraUudVzI6rU3o7IClgBu+iyigRzlFP3Io5CzdJ4oaann+98GFS/p2HW70r5NAhk7wSd1wDSiqvpAe4YytP/ujt/+ffh352N0c7m7zFWH27JSLj7lkHJa7mmZfGmm49esk2gSR2amMqsmcv5YMOLSySgq9E6Uq1cvPhPa2xbY5M+uNIh7Xm5Ep1GfdfrktEU7Joip9KEqsK91H7H+OKw0VVSfnOFbQefqJfBN1nvGZ7z33BNR0aizuuKoEu72cf2OEvSXlBf3UQIDAQAB",
+			key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsfoZaCQyMpVXY3RMU23D/lsxlgjeyAaSWLeh9F1dF5A8bykJc2vXXcwagMfLRuCvZLdZvnC2KJAa4tTFjC2eRDoF0ve9LM5eBqAcTPhzSm4eVi8tvTnNPJKsnrM7gktl4QLN8wom6wEKTwsz8D1ePOCB/RmbbYbbRkKaAZvAeadlGuOhF+vATfc3jN4jun1TxTrkWKGCBlS+z4l5eV8xF0F97iX1S5P4B4oU2LkbcUEwLonW4o6et6xMxK04uHiZ0kearv1f5j7Q/w47W21g03leXEevjzwVqy5Xutu6DNCcvTilYLveTflUyKBEl1qaoz90gf9iONEC5TesYGMWtwIDAQAB",
 			-- This is optional, it can be strict or serverManaged(default).
 			-- stric WILL NOT cache the server response so if there is no network access then it will always return false.
 			-- serverManaged WILL cache the server response so if there is no network access it can use the cached response.

@@ -29,7 +29,6 @@
 	 -->
 	<application android:label="GoogleIAPTestApp"
 	             android:hardwareAccelerated="true"
-	             android:debuggable="true"
 	             android:icon="@drawable/icon">
 		<meta-data android:name="targetedAppStore" android:value="google"/>
 		<!-- The main Corona activity that runs the Corona project. -->

@@ -36,7 +36,6 @@ public class IabResult {
         else {
             mMessage = message + " (response: " + IabHelper.getResponseDesc(response) + ")";
         }
-        android.util.Log.d("dchan", mMessage);
     }
     public int getResponse() { return mResponse; }
     public String getMessage() { return mMessage; }
