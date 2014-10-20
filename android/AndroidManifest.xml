@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.coronalabs.dchan.test.purchase"
+          package="com.coronalabs.dchan.test.iap"
           android:versionCode="1"
-          android:versionName="1.0"
+          android:versionName="1"
 	      android:installLocation="auto">
 	<!--
 	 Set the minimum and target Android API levels here to inform the app store what OS versions this app supports.
@@ -58,7 +58,7 @@
 		
 		<!-- Corona content provider required by the video player and mail app to access this app's local files. -->
 		<provider android:name="com.ansca.corona.storage.FileContentProvider"
-		          android:authorities="com.coronalabs.dchan.test.purchase.files" />
+		          android:authorities="com.coronalabs.dchan.test.iap.files" />
 		
 		<!-- Corona service used to perform background operations such as managing notifications. -->
 		<service android:name="com.ansca.corona.CoronaService" />
@@ -85,7 +85,7 @@
 			<intent-filter>
 				<action android:name="com.google.android.c2dm.intent.RECEIVE" />
 				<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-				<category android:name="com.coronalabs.dchan.test.purchase" />
+				<category android:name="com.coronalabs.dchan.test.iap" />
 			</intent-filter>
 		</receiver>
 
