@@ -5,6 +5,7 @@ package plugin.google.iap.v3;
 import android.content.Context;
 import android.util.Log;
 
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -28,6 +29,21 @@ import com.ansca.corona.CoronaRuntimeTaskDispatcher;
 import com.ansca.corona.CoronaRuntimeTask;
 
 public class PurchaseFinishedListener implements IabHelper.OnIabPurchaseFinishedListener {
+	// This listener is needed for the Adrally plugin so that we can register a successful in app purchase
+	private static CopyOnWriteArrayList<IabHelper.OnIabPurchaseFinishedListener> sListeners;
+
+	static {
+		sListeners = new CopyOnWriteArrayList<IabHelper.OnIabPurchaseFinishedListener>();
+	}
+
+	public static void addListener(IabHelper.OnIabPurchaseFinishedListener listener) {
+		sListeners.add(listener);
+	}
+
+	public static void removeListener(IabHelper.OnIabPurchaseFinishedListener listener) {
+		sListeners.remove(listener);
+	}
+
 	private CoronaRuntimeTaskDispatcher fDispatcher;
 	private int fListener;
 
@@ -38,6 +54,13 @@ public class PurchaseFinishedListener implements IabHelper.OnIabPurchaseFinished
 
 	@Override
 	public void onIabPurchaseFinished(IabResult result, Purchase info) {
+		Iterator<IabHelper.OnIabPurchaseFinishedListener> i = sListeners.iterator();
+		IabHelper.OnIabPurchaseFinishedListener listener;
+		while(i.hasNext()) {
+			listener = i.next();
+			listener.onIabPurchaseFinished(result, info);
+		}
+
 		StoreTransactionRuntimeTask task = new StoreTransactionRuntimeTask(info, result, fListener);
 		// Send the above task to the Corona runtime asynchronously.
 		// The send() method will do nothing if the Corona runtime is no longer available, which can
