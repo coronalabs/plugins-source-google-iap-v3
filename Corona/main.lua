@@ -66,9 +66,9 @@ store.init(listenerTable)
 print("isActive2: ", store.isActive)
 
 -- print("pre-loadProducts")
--- store.loadProducts( products, listenerTable )
+store.loadProducts( products, listenerTable )
 -- print("post-loadProducts")
 
--- store.purchase( products[3] )
+store.purchase( products[3] )
 
 store.consumePurchase(products)
