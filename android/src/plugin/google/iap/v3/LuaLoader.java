@@ -146,7 +146,7 @@ public class LuaLoader implements JavaFunction {
 
 		final LuaState luaState = L;
 
-		final AtomicBoolean syncObject = new AtomicBoolean(true);
+		final AtomicBoolean finishedSync = new AtomicBoolean(false);
 
 		Context context = CoronaEnvironment.getApplicationContext();
 		if (licenseKey.length() > 0 && context != null) {
@@ -169,20 +169,14 @@ public class LuaLoader implements JavaFunction {
 
 					luaState.pop(1);
 
-					synchronized(syncObject) {
-						syncObject.set(false);
-						syncObject.notifyAll();
-					}
+					finishedSync.set(true);
 				}
 			});
 		}
-		synchronized(syncObject) {
-			while(syncObject.get()) {
-				try {
-					syncObject.wait();
-				} catch (java.lang.InterruptedException e) {}
-			}
+
+		while(!finishedSync.get()) {
 		}
+		
 		return 0;
 	}
 
