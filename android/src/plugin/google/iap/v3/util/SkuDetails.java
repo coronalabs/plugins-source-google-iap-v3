@@ -56,6 +56,8 @@ public class SkuDetails {
     public String getPrice() { return mPrice; }
     public String getTitle() { return mTitle; }
     public String getDescription() { return mDescription; }
+    public String getPriceCurrencyCode() { return mPriceCurrencyCode; }
+    public String getPriceAmountMicros() { return mPriceAmountMicros; }
 
     @Override
     public String toString() {

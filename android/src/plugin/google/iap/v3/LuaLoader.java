@@ -32,6 +32,17 @@ import com.ansca.corona.CoronaRuntimeTaskDispatcher;
 import com.ansca.corona.CoronaRuntimeTask;
 
 public class LuaLoader implements JavaFunction {
+	// This is for the adrally plugin so that it can query the details of a purchase to get the price.
+	public static void queryInventoryAsync(HashSet<String> managedProducts, IabHelper.QueryInventoryFinishedListener listener) {
+		if (sHelper == null) {
+			return;
+		}
+
+		sHelper.queryInventoryAsync(true, managedProducts, null, listener);
+	}
+
+	private static IabHelper sHelper;
+
 	private int fLibRef;
 	private int fListener;
 	private IabHelper fHelper;
@@ -143,6 +154,10 @@ public class LuaLoader implements JavaFunction {
 			fHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
 				public void onIabSetupFinished(IabResult result) {
 					fSetupSuccessful = result.isSuccess();
+
+					if (fSetupSuccessful) {
+						sHelper = fHelper;
+					}
 
 					luaState.rawGet(LuaState.REGISTRYINDEX, fLibRef);
 
