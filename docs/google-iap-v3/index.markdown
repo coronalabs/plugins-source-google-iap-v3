@@ -36,6 +36,7 @@ For more information see the [In-App Purchases (IAP)][guide.monetization.IAP] gu
 
 #### [store.restore()][plugin.google-iap-v3.restore]
 
+#### [store.target][plugin.google-iap-v3.target]
 
 ## Migration
 
