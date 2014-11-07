@@ -31,6 +31,8 @@ import com.ansca.corona.CoronaRuntimeListener;
 import com.ansca.corona.CoronaRuntimeTaskDispatcher;
 import com.ansca.corona.CoronaRuntimeTask;
 
+import com.ansca.corona.purchasing.StoreServices;
+
 public class LuaLoader implements JavaFunction {
 	// This is for the adrally plugin so that it can query the details of a purchase to get the price.
 	public static void queryInventoryAsync(HashSet<String> managedProducts, IabHelper.QueryInventoryFinishedListener listener) {
@@ -101,6 +103,9 @@ public class LuaLoader implements JavaFunction {
 
 		L.pushBoolean(true);
 		L.setField(-2, "canPurchaseSubscriptions");
+
+		L.pushString(StoreServices.getTargetedAppStoreName());
+		L.setField(-2, "target");
 
 		return 1;
 	}

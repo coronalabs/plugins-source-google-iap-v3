@@ -64,6 +64,7 @@ end
 print("isActive1: ", store.isActive)
 store.init(listenerTable)
 print("isActive2: ", store.isActive)
+print("target: ", store.target)
 
 -- print("pre-loadProducts")
 store.loadProducts( products, listenerTable )
