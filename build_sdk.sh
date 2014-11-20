@@ -97,8 +97,14 @@ cd "$path/ios"
 	# Remove i386 from ios build
 	find "$OUTPUT_DIR_IOS" -name \*.a | xargs -n 1 -I % lipo -remove i386 % -output %
 
+	# Remove x86_64 from ios build
+	find "$OUTPUT_DIR_IOS" -name \*.a | xargs -n 1 -I % lipo -remove x86_64 % -output %
+
 	# Remove armv7 from ios-sim build
 	find "$OUTPUT_DIR_IOS_SIM" -name \*.a | xargs -n 1 -I % lipo -remove armv7 % -output %
+
+	# Remove arm64 from ios-sim build
+	find "$OUTPUT_DIR_IOS_SIM" -name \*.a | xargs -n 1 -I % lipo -remove arm64 % -output %
 cd -
 
 # echo "------------------------------------------------------------------------"
