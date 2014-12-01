@@ -158,6 +158,11 @@ public class LuaLoader implements JavaFunction {
 			fHelper = new IabHelper(context, licenseKey);
 			fHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
 				public void onIabSetupFinished(IabResult result) {
+					if (!luaState.isOpen()) {
+						finishedSync.set(true);
+						return;
+					}
+
 					fSetupSuccessful = result.isSuccess();
 
 					if (fSetupSuccessful) {

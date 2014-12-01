@@ -383,6 +383,13 @@ public class IabHelper {
             return;
         }
 
+        if (mService == null) {
+            IabResult r = new IabResult(IABHELPER_ERROR_BASE,
+                    "Improper initialization.");
+            if (listener != null) listener.onIabPurchaseFinished(r, null);
+            return;
+        }
+
         try {
             logDebug("Constructing buy intent for " + sku + ", item type: " + itemType);
             Bundle buyIntentBundle = mService.getBuyIntent(3, mContext.getPackageName(), sku, itemType, extraData);
@@ -652,6 +659,10 @@ public class IabHelper {
                     "Items of type '" + itemInfo.mItemType + "' can't be consumed.");
         }
 
+        if (mService == null) {
+            return;
+        }
+
         try {
             String token = itemInfo.getToken();
             String sku = itemInfo.getSku();
@@ -812,6 +823,10 @@ public class IabHelper {
         boolean verificationFailed = false;
         String continueToken = null;
 
+        if (mService == null) {
+            return IABHELPER_BAD_RESPONSE;
+        }
+
         do {
             logDebug("Calling getPurchases with continuation token: " + continueToken);
             Bundle ownedItems = mService.getPurchases(3, mContext.getPackageName(),
@@ -881,6 +896,10 @@ public class IabHelper {
                     skuList.add(sku);
                 }
             }
+        }
+
+        if (mService == null) {
+            return BILLING_RESPONSE_RESULT_ERROR;
         }
 
         if (skuList.size() == 0) {
