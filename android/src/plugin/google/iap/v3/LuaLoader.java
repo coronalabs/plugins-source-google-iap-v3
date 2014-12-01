@@ -360,9 +360,10 @@ public class LuaLoader implements JavaFunction {
 		fHelper.queryInventoryAsync(true, null, null, new IabHelper.QueryInventoryFinishedListener() {
 			@Override
 			public void onQueryInventoryFinished(IabResult result, Inventory inv) {
-				if (result.isFailure()) {
+				if (result.isFailure() || inv == null) {
 					StoreTransactionRuntimeTask task = new StoreTransactionRuntimeTask(null, result, fListener);
 					fDispatcher.send(task);
+					return;
 				}
 
 				ArrayList<Purchase> purchasesToConsume = new ArrayList<Purchase>(consumedProducts.size());
