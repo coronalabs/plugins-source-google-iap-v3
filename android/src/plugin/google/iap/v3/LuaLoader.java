@@ -182,6 +182,14 @@ public class LuaLoader implements JavaFunction {
 					finishedSync.set(true);
 				}
 			});
+		} else {
+			if (licenseKey.length() < 1) {
+				Log.w("Corona", "No license key was supplied to config.lua.");
+			}
+			if (context == null) {
+				Log.w("Corona", "Context was null.");
+			}
+			finishedSync.set(true);
 		}
 
 		while(!finishedSync.get()) {
