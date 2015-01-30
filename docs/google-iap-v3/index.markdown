@@ -16,6 +16,11 @@ This plugin allows you to support in-app purchases using Google's in-app billing
 For more information see the [In-App Purchases (IAP)][guide.monetization.IAP] guide.
 
 
+## Syntax
+
+	local store = require( "plugin.google.iap.v3" )
+
+
 ## Functions
 
 #### [store.canLoadProducts][plugin.google-iap-v3.canLoadProducts]
@@ -37,6 +42,7 @@ For more information see the [In-App Purchases (IAP)][guide.monetization.IAP] gu
 #### [store.restore()][plugin.google-iap-v3.restore]
 
 #### [store.target][plugin.google-iap-v3.target]
+
 
 ## Migration
 
