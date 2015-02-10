@@ -1,3 +1,5 @@
+display.setStatusBar( display.DefaultStatusBar )
+
 local store = require("plugin.google.iap.v3")
 
 local products = {
@@ -67,9 +69,23 @@ print("isActive2: ", store.isActive)
 print("target: ", store.target)
 
 -- print("pre-loadProducts")
-store.loadProducts( products, listenerTable )
--- print("post-loadProducts")
+-- store.loadProducts( products, listenerTable )
+-- -- print("post-loadProducts")
 
-store.purchase( products[3] )
+-- store.purchase( products[1] )
 
-store.consumePurchase(products)
+-- store.consumePurchase(products)
+
+local function listener(event)
+	store.purchase(products[1])
+end
+
+local function listener1(event)
+	store.consumePurchase(products)
+end
+
+local buy = display.newText( "buy", 100, 100, native.systemFont, 25 )
+buy:addEventListener( "tap", listener )
+
+local consume = display.newText( "consume", 100, 140, native.systemFont, 25 )
+consume:addEventListener( "tap", listener1 )
