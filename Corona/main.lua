@@ -1,14 +1,38 @@
 display.setStatusBar( display.DefaultStatusBar )
 
+-- for i=3,26 do
+-- 	print('"' .. i .. '",')
+-- end
+
 local store = require("plugin.google.iap.v3")
 
 local products = {
-	"valid1",
-	"invalid1",
-	"asdfasdf",
-	-- "managed.product.2",
-	-- "m3",
-	-- "bad managed data"
+	"p3",
+"p4",
+-- "p5",
+-- "p6",
+-- "p7",
+-- "p8",
+-- "p9",
+-- "p10",
+-- "p11",
+-- "p12",
+-- "p13",
+-- "p14",
+-- "p15",
+-- "p16",
+-- "p17",
+-- "p18",
+-- "p19",
+-- "p20",
+-- "p21",
+-- "p22",
+-- "p23",
+-- "p24",
+-- "p25",
+-- "p26",
+-- "asdfasdf",
+-- "valid1"
 }
 
 local subscriptionProducts = {
@@ -77,11 +101,43 @@ print("target: ", store.target)
 -- store.consumePurchase(products)
 
 local function listener(event)
-	store.purchase(products[1])
+	for i=1, #products do
+		store.purchase(products[i])
+	end
 end
 
 local function listener1(event)
 	store.consumePurchase(products)
+end
+
+local function listener2(event)
+	local function productCallback( event )
+
+	    if ( event.isError ) then
+	        print( event.errorType )
+	        print( event.errorString )
+	        return
+	    end
+
+	    print( "Showing valid products:", #event.products )
+	    for i = 1,#event.products do
+	        print( event.products[i].title )              --string
+	        print( event.products[i].description )        --string
+	        print( event.products[i].localizedPrice )     --string
+	        print( event.products[i].productIdentifier )  --string
+	        print( event.products[i].type )               --string
+	        print( event.products[i].priceAmountMicros )  --string
+	        print( event.products[i].priceCurrencyCode )  --string
+	        print( event.products[i].originalJson )       --string
+	    end
+
+	    print( "Showing invalid products:", #event.invalidProducts )
+	    for j = 1,#event.invalidProducts do
+	        print( event.invalidProducts[j] )
+	    end
+	end
+
+	store.loadProducts( products, productCallback )
 end
 
 local buy = display.newText( "buy", 100, 100, native.systemFont, 25 )
@@ -89,3 +145,6 @@ buy:addEventListener( "tap", listener )
 
 local consume = display.newText( "consume", 100, 140, native.systemFont, 25 )
 consume:addEventListener( "tap", listener1 )
+
+local restore = display.newText( "loadProducts", 100, 180, native.systemFont, 25 )
+restore:addEventListener( "tap", listener2 )
