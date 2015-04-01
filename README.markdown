@@ -22,4 +22,3 @@ Install [CoronaEnterprise](http://coronalabs.com/products/enterprise/).
 
 * [Corona Enterprise](http://docs.coronalabs.com/native/)
 * [API Reference](http://docs.coronalabs.com/plugin/google-iap-v3/index.html)
-* [Sample Code](GIT_URL/samples)
