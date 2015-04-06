@@ -20,6 +20,13 @@ See the [plugins-source](https://github.com/coronalabs/plugins-source) section o
 android update project --target 1 --path /Applications/CoronaEnterprise/Corona/android/lib/Corona/ -p ./android/
 ```
 
+### Building
+To build the plugin, run build.sh.
+
+```bash
+./build.sh
+```
+
 ## Platform Support
 
 * Android
