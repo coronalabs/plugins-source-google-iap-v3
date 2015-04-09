@@ -50,13 +50,38 @@ public class Security {
      * the verified purchase. The data is in JSON format and signed
      * with a private key. The data also contains the {@link PurchaseState}
      * and product ID of the purchase.
+     *
+     * 4/2/2015: 
+     * Added a conditional that gives a pass to Google's prefab product IDs used for 
+     * static response testing of IAP. Specifically, the default version in IAP v3 
+     * would break when trying to invoke store.loadProducts() after purchasing an 
+     * android.test.purchased product. This fix is described at:
+     * http://stackoverflow.com/questions/19732025/android-in-app-billing-purchase-verification-failed
+     *
      * @param base64PublicKey the base64-encoded public key to use for verifying.
      * @param signedData the signed JSON string (signed, not encrypted)
      * @param signature the signature for the data, signed with the private key
      */
     public static boolean verifyPurchase(String base64PublicKey, String signedData, String signature) {
+
         if (TextUtils.isEmpty(signedData) || TextUtils.isEmpty(base64PublicKey) ||
                 TextUtils.isEmpty(signature)) {
+
+            // Reserved product IDs used for static testing don't have a signature associated with them.
+            // Since these are reserved IDs, we give them a pass so our customers can do static response testing.
+            // Need to read the JSON data to figure out if we should pass this product ID
+            try {
+                JSONObject signedDataJSON = new JSONObject(signedData);
+                String productId = signedDataJSON.getString("productId");
+                Log.e(TAG, "Security.verifyPurchase(): productId: " + productId);
+                if (productId.equals("android.test.purchased")) {
+                    return true;
+                }
+            }
+            catch (JSONException e) { // Our signed data is invalid.
+                Log.e(TAG, "Purchase verification failed: signedData is invalid");
+            }
+
             Log.e(TAG, "Purchase verification failed: missing data.");
             return false;
         }
