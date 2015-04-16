@@ -1,2 +1,5 @@
 # Built files
 build/
+
+# Mercurial files
+.hgignore
