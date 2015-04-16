@@ -99,6 +99,11 @@
         <antcall target="android_rules.release" inheritAll="true" inheritRefs="true"/>
     </target>
 
+    <target name="debug">
+        <copy-libs/>
+        <antcall target="android_rules.debug" inheritAll="true" inheritRefs="true"/>
+    </target>
+
     <target name="-post-build">
         <copy file="bin/classes.jar" tofile="bin/${CoronaPluginName}.jar" />
     </target>
