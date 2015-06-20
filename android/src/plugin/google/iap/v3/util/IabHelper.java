@@ -270,7 +270,21 @@ public class IabHelper {
             mContext.getPackageManager() != null &&
             !mContext.getPackageManager().queryIntentServices(serviceIntent, 0).isEmpty()) {
             // service available to handle that Intent
-            mContext.bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
+            /* Corona:
+             * Check if the service was binded and return control to our plugin code if it failed to bind.
+             * Handles an edge case that Google ignored.
+             * Detailed at: https://code.google.com/p/android/issues/detail?id=42726
+             */
+            if(!mContext.bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE)) {
+                // We finished our setup attempt and failed.
+                // Invoke our listener and let them.
+                logDebug("Failed to bind IABService");
+                if (listener != null) {
+                    listener.onIabSetupFinished(
+                            new IabResult(BILLING_RESPONSE_RESULT_ERROR,
+                                    "Binding the Billing Service to the Context failed."));
+                }
+            }
         }
         else {
             // no service available to handle that Intent
