@@ -5,6 +5,7 @@ package plugin.google.iap.v3;
 import android.content.Context;
 import android.util.Log;
 
+import java.lang.Thread;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -149,8 +150,6 @@ public class LuaLoader implements JavaFunction {
 			fListener = CoronaLua.newRef(L, listenerIndex);
 		}
 
-		final LuaState luaState = L;
-
 		final AtomicBoolean finishedSync = new AtomicBoolean(false);
 
 		Context context = CoronaEnvironment.getApplicationContext();
@@ -158,27 +157,12 @@ public class LuaLoader implements JavaFunction {
 			fHelper = new IabHelper(context, licenseKey);
 			fHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
 				public void onIabSetupFinished(IabResult result) {
-					if (!luaState.isOpen()) {
-						finishedSync.set(true);
-						return;
-					}
-
+					/* CAUTION: This can run on the main thread if it's called from
+					 * ServiceConnection.onServiceConnected. To handle this, we just grab
+					 * the data we need from the IabResult, and then manipulate the LuaState
+					 * on the same thread as the caller.
+					 */
 					fSetupSuccessful = result.isSuccess();
-
-					if (fSetupSuccessful) {
-						sHelper = fHelper;
-					}
-
-					luaState.rawGet(LuaState.REGISTRYINDEX, fLibRef);
-
-					luaState.pushBoolean(result.isSuccess());
-					luaState.setField(-2, "isActive");
-
-					luaState.pushBoolean(fHelper.subscriptionsSupported());
-					luaState.setField(-2, "canPurchaseSubscriptions");
-
-					luaState.pop(1);
-
 					finishedSync.set(true);
 				}
 			});
@@ -189,11 +173,33 @@ public class LuaLoader implements JavaFunction {
 			if (context == null) {
 				Log.w("Corona", "Context was null.");
 			}
-			finishedSync.set(true);
+			return 0;
 		}
 
-		while(!finishedSync.get()) {
+		// Spin lock to wait for onIabSetupFinished to complete
+		// Do this with Thread.yield() to not slam the CPU for no reason.
+		while(!finishedSync.get()) {Thread.yield();}
+
+		// Handle Lua state manipulation now that we're guarenteed
+		// to be running on the same thread as the caller.
+		if (!L.isOpen()) {
+			Log.d("Corona", "LuaState isn't open after setting up Google's In App Billing.");
+			return 0;
 		}
+
+		if (fSetupSuccessful) {
+			sHelper = fHelper;
+		}
+
+		L.rawGet(LuaState.REGISTRYINDEX, fLibRef);
+
+		L.pushBoolean(fSetupSuccessful);
+		L.setField(-2, "isActive");
+
+		L.pushBoolean(fHelper.subscriptionsSupported());
+		L.setField(-2, "canPurchaseSubscriptions");
+
+		L.pop(1);
 		
 		return 0;
 	}

@@ -209,6 +209,9 @@ public class IabHelper {
 
         // Connection to IAB service
         logDebug("Starting in-app billing setup.");
+
+        // CAUTION: All callbacks for the ServiceConnection are invoked on the main thread!
+        // See: http://developer.android.com/reference/android/content/ServiceConnection.html for more
         mServiceConn = new ServiceConnection() {
             @Override
             public void onServiceDisconnected(ComponentName name) {
