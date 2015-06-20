@@ -51,9 +51,6 @@ OUTPUT_DIR_MAC=$OUTPUT_PLUGINS_DIR/mac-sim
 OUTPUT_DIR_ANDROID=$OUTPUT_PLUGINS_DIR/android
 OUTPUT_DIR_WIN32=$OUTPUT_PLUGINS_DIR/win32-sim
 
-# Docs
-OUTPUT_DIR_DOCS=$OUTPUT_DIR/docs
-
 # Samples
 OUTPUT_DIR_SAMPLES=$OUTPUT_DIR/samples
 
@@ -128,11 +125,6 @@ cd -
 # 	cp -v *.lua "$OUTPUT_DIR_WIN32"
 # 	checkError
 # cd -
-
-echo "------------------------------------------------------------------------"
-echo "[docs]"
-cp -vrf "$path/docs" "$OUTPUT_DIR"
-checkError
 
 echo "------------------------------------------------------------------------"
 echo "[samples]"
