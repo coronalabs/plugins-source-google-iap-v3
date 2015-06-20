@@ -51,7 +51,7 @@ public class Security {
      * with a private key. The data also contains the {@link PurchaseState}
      * and product ID of the purchase.
      *
-     * 4/2/2015: 
+     * Corona:
      * Added a conditional that gives a pass to Google's prefab product IDs used for 
      * static response testing of IAP. Specifically, the default version in IAP v3 
      * would break when trying to invoke store.loadProducts() after purchasing an 
