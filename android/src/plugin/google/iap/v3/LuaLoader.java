@@ -268,6 +268,12 @@ public class LuaLoader implements JavaFunction {
 		fHelper.queryInventoryAsync(false, null, null, new IabHelper.QueryInventoryFinishedListener() {
 			@Override
 			public void onQueryInventoryFinished(IabResult result, Inventory inv) {
+				if (result.isFailure() || inv == null) {
+					StoreTransactionRuntimeTask task = new StoreTransactionRuntimeTask(null, result, fListener);
+					fDispatcher.send(task);
+					return;
+				}
+
 				List<Purchase> allPurchases = inv.getAllPurchases();
 				Iterator<Purchase> iterator = allPurchases.iterator();
 				while (iterator.hasNext()) {
