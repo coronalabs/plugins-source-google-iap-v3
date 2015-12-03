@@ -51,6 +51,7 @@ public class LuaLoader implements JavaFunction {
 	private IabHelper fHelper;
 	private CoronaRuntimeTaskDispatcher fDispatcher;
 	private boolean fSetupSuccessful;
+	private String fSetupMessage;
 
 	/**
 	 * Creates a new object for displaying banner ads on the CoronaActivity
@@ -163,6 +164,7 @@ public class LuaLoader implements JavaFunction {
 					 * on the same thread as the caller.
 					 */
 					fSetupSuccessful = result.isSuccess();
+					fSetupMessage = result.getMessage();
 					finishedSync.set(true);
 				}
 			});
@@ -183,12 +185,16 @@ public class LuaLoader implements JavaFunction {
 		// Handle Lua state manipulation now that we're guarenteed
 		// to be running on the same thread as the caller.
 		if (!L.isOpen()) {
-			Log.d("Corona", "LuaState isn't open after setting up Google's In App Billing.");
+			Log.w("Corona", "LuaState isn't open after setting up Google's In App Billing.");
 			return 0;
 		}
 
 		if (fSetupSuccessful) {
 			sHelper = fHelper;
+		} else {
+			if (fSetupMessage == null) fSetupMessage = "unknown";
+			// Print out what went wrong in the initialization process.
+			Log.w("Corona", "Error in initializing Google's In App Billing: " + fSetupMessage);
 		}
 
 		L.rawGet(LuaState.REGISTRYINDEX, fLibRef);
