@@ -271,6 +271,7 @@ public class IabHelper {
         serviceIntent.setPackage("com.android.vending");
         if (mContext != null &&
             mContext.getPackageManager() != null &&
+            mContext.getPackageManager().queryIntentServices(serviceIntent, 0) != null &&
             !mContext.getPackageManager().queryIntentServices(serviceIntent, 0).isEmpty()) {
             // service available to handle that Intent
             /* Corona:
