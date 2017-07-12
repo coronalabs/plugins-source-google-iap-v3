@@ -8,10 +8,20 @@
 # 2) Set the path to an environment variable named "ANDROID_SDK".
 # ------------------------------------------------------------------------------------------
 
+# If stdout is the terminal, save a copy of the output to a log file
+if [ -t 1 ]
+then
+        # Redirect stdout ( > ) into a named pipe ( >() ) running "tee"
+        exec > >(tee "$(basename "$0" .sh).log")
+        # Copy stderr to stdout
+        exec 2>&1
+fi
+
 #
 # Checks exit value for error
 # 
 checkError() {
+	# shellcheck disable=SC2181
     if [ $? -ne 0 ]
     then
         echo "Exiting due to errors (above)"
@@ -19,14 +29,14 @@ checkError() {
     fi
 }
 
-script=`basename $0`
-path=`dirname $0`
+script=$(basename "$0")
+path=$(dirname "$0")
 
 # 
 # Canonicalize relative paths to absolute paths
 # 
-pushd $path > /dev/null
-dir=`pwd`
+pushd "$path" > /dev/null
+dir=$(pwd)
 path=$dir
 popd > /dev/null
 
@@ -42,7 +52,7 @@ fi
 
 if [ -z "$CORONA_ENTERPRISE_DIR" ]
 then
-	CORONA_ENTERPRISE_DIR=/Applications/CoronaEnterprise
+	CORONA_ENTERPRISE_DIR=~/Library/Application\ Support/Corona/Native
 fi
 
 if [ ! -z "$2" ]
@@ -54,8 +64,8 @@ fi
 
 RELATIVE_PATH_TOOL=$CORONA_PATH/Corona/mac/bin/relativePath.sh
 
-CORONA_PATH=`"$RELATIVE_PATH_TOOL" "$path" "$CORONA_PATH"`
-echo CORONA_PATH: $CORONA_PATH
+CORONA_PATH=$("$RELATIVE_PATH_TOOL" "$path" "$CORONA_PATH")
+echo "CORONA_PATH: $CORONA_PATH"
 
 # Do not continue if we do not have the path to the Android SDK.
 if [ -z "$SDK_PATH" ]
@@ -64,8 +74,8 @@ then
 	echo ""
 	echo "USAGE:  $script"
 	echo "USAGE:  $script android_sdk_path"
-	echo "\tandroid_sdk_path: Path to the root Android SDK directory."
-	echo "\tcorona_enterprise_path: Path to the CoronaEnterprise directory."
+	echo "    android_sdk_path: Path to the root Android SDK directory."
+	echo "    corona_enterprise_path: Path to the CoronaEnterprise directory."
 	exit -1
 fi
 
@@ -87,5 +97,5 @@ checkError
 echo "Using Corona Enterprise Dir: $CORONA_PATH"
 
 # Build the Test project via the Ant build system.
-ant release -D"CoronaEnterpriseDir"="$CORONA_PATH"
+ant release -D"CoronaEnterpriseDir=$CORONA_PATH"
 checkError
