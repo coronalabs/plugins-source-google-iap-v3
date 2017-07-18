@@ -119,7 +119,7 @@ public class ProductListRuntimeTask implements CoronaRuntimeTask {
 			CoronaLua.dispatchEvent(L, fListener, 0);
 		}
 		catch (Exception ex) {
-			ex.printStackTrace();
+			Log.e("Corona", "ProductListRuntimeTask: dispatching Google IAP productList event", ex);
 		}
 		CoronaLua.deleteRef(L, fListener);
 	}

@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import plugin.google.iap.v3.util.IabHelper;
 import plugin.google.iap.v3.util.IabResult;
 import plugin.google.iap.v3.util.Purchase;
 
@@ -26,16 +27,19 @@ import com.ansca.corona.CoronaRuntimeListener;
 import com.ansca.corona.CoronaRuntimeTaskDispatcher;
 import com.ansca.corona.CoronaRuntimeTask;
 
-public class StoreTransactionRuntimeTask implements CoronaRuntimeTask {
+public class InitRuntimeTask implements CoronaRuntimeTask {
 
-	private Purchase fPurchase;
 	private int fListener;
+	private int fLibRef;
 	private IabResult fResult;
+	private IabHelper fHelper;
+	private boolean DEBUG = false;
 
-	public StoreTransactionRuntimeTask(Purchase purchase, IabResult result, int listener) {
-		fPurchase = purchase;
+	public InitRuntimeTask(IabHelper helper, IabResult result, int listener, int libRef) {
+		fHelper = helper;
 		fResult = result;
 		fListener = listener;
+		fLibRef = libRef;
 	}
 
 	@Override
@@ -43,12 +47,28 @@ public class StoreTransactionRuntimeTask implements CoronaRuntimeTask {
 		if (fListener == CoronaLua.REFNIL) {
 			return;
 		}
-		
+
+		if (DEBUG) {
+			Thread t = Thread.currentThread();
+			Log.w("Corona", "InitRuntimeTask: thread id: " + t.getId());
+		}
+
 		// *** We are now running on the Corona runtime thread. ***
 		LuaState L = runtime.getLuaState();
 		try {
+			// Set the store attributes
+			L.rawGet(LuaState.REGISTRYINDEX, fLibRef);
+
+			L.pushBoolean(fResult.isSuccess());
+			L.setField(-2, "isActive");
+
+			L.pushBoolean(fHelper.subscriptionsSupported());
+			L.setField(-2, "canPurchaseSubscriptions");
+
+			L.pop(1);
+
 			String state = "";
-			CoronaLua.newEvent( L, "storeTransaction");
+			CoronaLua.newEvent( L, "init");
 
 			L.newTable();
 			if (fResult.isFailure()) {
@@ -60,64 +80,21 @@ public class StoreTransactionRuntimeTask implements CoronaRuntimeTask {
 
 				L.pushString(fResult.getMessage());
 				L.setField(-2, "errorString");
-
-				state = "failed";
 			} else {
-				L.pushString(fPurchase.getItemType());
-				L.setField(-2, "type");
-				
-				L.pushString(fPurchase.getOrderId());
-				L.setField(-2, "identifier");
-				
-				L.pushString(fPurchase.getPackageName());
-				L.setField(-2, "packageName");
-				
-				L.pushString(fPurchase.getSku());
-				L.setField(-2, "productIdentifier");
-				
-				L.pushNumber(fPurchase.getPurchaseTime());
-				L.setField(-2, "date");
-
-				switch(fPurchase.getPurchaseState()) {
-					case Purchased: 
-						state = "purchased";
-						break;
-					case Cancelled: 
-						state = "cancelled";
-						break;
-					case Refunded: 
-						state = "refunded";
-						break;
-					case Consumed: 
-						state = "consumed";
-						break;
-					default: 
-						state = "unknown";
-				}
-
-				L.pushString(fPurchase.getToken());
-				L.setField(-2, "token");
-
-				L.pushString(fPurchase.getOriginalJson());
-				L.setField(-2, "originalJson");
-
-				L.pushString(fPurchase.getOriginalJson());
-				L.setField(-2, "receipt");
-
-				L.pushString(fPurchase.getSignature());
-				L.setField(-2, "signature");
+				L.pushBoolean(false);
+				L.setField(-2, "isError");
 			}
 
-			L.pushString(state);
+			L.pushString("initialized");
 			L.setField(-2, "state");
 
 			L.setField(-2, "transaction");
-			
+
 			// Dispatch event table at top of stack
 			CoronaLua.dispatchEvent(L, fListener, 0);
 		}
 		catch (Exception ex) {
-			Log.e("Corona", "StoreTransactionRuntimeTask: dispatching Google IAP storeTransaction event", ex);
+			Log.e("Corona", "InitRuntimeTask: dispatching Google IAP init event", ex);
 		}
 	}
 }

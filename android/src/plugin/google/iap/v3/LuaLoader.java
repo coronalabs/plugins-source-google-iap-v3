@@ -142,6 +142,7 @@ public class LuaLoader implements JavaFunction {
 		}
 		L.pop(1);
 		
+		// Skip an initial string parameter if present to be compatible with old store.init() API
 		if (L.type(listenerIndex) == LuaType.STRING) {
 			listenerIndex++;
 		}
@@ -151,21 +152,30 @@ public class LuaLoader implements JavaFunction {
 			fListener = CoronaLua.newRef(L, listenerIndex);
 		}
 
-		final AtomicBoolean finishedSync = new AtomicBoolean(false);
-
 		Context context = CoronaEnvironment.getApplicationContext();
 		if (licenseKey.length() > 0 && context != null) {
 			fHelper = new IabHelper(context, licenseKey);
 			fHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
 				public void onIabSetupFinished(IabResult result) {
-					/* CAUTION: This can run on the main thread if it's called from
-					 * ServiceConnection.onServiceConnected. To handle this, we just grab
-					 * the data we need from the IabResult, and then manipulate the LuaState
-					 * on the same thread as the caller.
+					/* CAUTION: This will run on the main thread if it's called from
+					 * ServiceConnection.onServiceConnected. To handle this, we send the
+					 * the IabResult to the Lua thread by dispatching a task
 					 */
 					fSetupSuccessful = result.isSuccess();
 					fSetupMessage = result.getMessage();
-					finishedSync.set(true);
+
+					if (fSetupSuccessful) {
+						sHelper = fHelper;
+					} else {
+						if (fSetupMessage == null) fSetupMessage = "unknown";
+						// Print out what went wrong in the initialization process.
+						Log.w("Corona", "Error initializing Google In App Billing: " + fSetupMessage);
+					}
+
+					InitRuntimeTask task = new InitRuntimeTask(fHelper, result, fListener, fLibRef);
+					fDispatcher.send(task);
+
+					return;
 				}
 			});
 		} else {
@@ -178,35 +188,6 @@ public class LuaLoader implements JavaFunction {
 			return 0;
 		}
 
-		// Spin lock to wait for onIabSetupFinished to complete
-		// Do this with Thread.yield() to not slam the CPU for no reason.
-		while(!finishedSync.get()) {Thread.yield();}
-
-		// Handle Lua state manipulation now that we're guarenteed
-		// to be running on the same thread as the caller.
-		if (!L.isOpen()) {
-			Log.w("Corona", "LuaState isn't open after setting up Google's In App Billing.");
-			return 0;
-		}
-
-		if (fSetupSuccessful) {
-			sHelper = fHelper;
-		} else {
-			if (fSetupMessage == null) fSetupMessage = "unknown";
-			// Print out what went wrong in the initialization process.
-			Log.w("Corona", "Error in initializing Google's In App Billing: " + fSetupMessage);
-		}
-
-		L.rawGet(LuaState.REGISTRYINDEX, fLibRef);
-
-		L.pushBoolean(fSetupSuccessful);
-		L.setField(-2, "isActive");
-
-		L.pushBoolean(fHelper.subscriptionsSupported());
-		L.setField(-2, "canPurchaseSubscriptions");
-
-		L.pop(1);
-		
 		return 0;
 	}
 
