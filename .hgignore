@@ -11,6 +11,7 @@ syntax: glob
 
 # Temp files used by vim
 .*.swp
+*.log
 
 # XCode
 contents.xcworkspacedata
@@ -57,3 +58,6 @@ android/obj/*
 
 # Git files
 .gitignore
+
+android/local.properties
+android/.d
