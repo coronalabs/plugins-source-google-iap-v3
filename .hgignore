@@ -56,6 +56,16 @@ android/gen/*
 android/assets/*
 android/obj/*
 
+*.iml
+.gradle
+android/local.properties
+android/.idea
+android.DS_Store
+android/**/build/
+android/captures
+android/app/src/main/assets/
+android/app/src/main/res/
+
 # Git files
 .gitignore
 

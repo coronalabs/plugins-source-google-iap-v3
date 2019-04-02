@@ -1,8 +1,5 @@
 display.setStatusBar( display.DefaultStatusBar )
-
--- for i=3,26 do
--- 	print('"' .. i .. '",')
--- end
+local json = require "json"
 
 local store = require("plugin.google.iap.v3")
 
@@ -42,6 +39,11 @@ local subscriptionProducts = {
 }
 
 local listenerTable = {}
+
+function listenerTable:init(event)
+	print("Init event", json.prettify(event),"\n----------------")
+end
+
 function listenerTable:productList(event)
 	print("isActive3: ", store.isActive)
 	if event.isError then
@@ -146,5 +148,8 @@ buy:addEventListener( "tap", listener )
 local consume = display.newText( "consume", 100, 140, native.systemFont, 25 )
 consume:addEventListener( "tap", listener1 )
 
-local restore = display.newText( "loadProducts", 100, 180, native.systemFont, 25 )
-restore:addEventListener( "tap", listener2 )
+local loadProducts = display.newText( "loadProducts", 100, 180, native.systemFont, 25 )
+loadProducts:addEventListener( "tap", listener2 )
+
+local restore = display.newText( "restore", 100, 220, native.systemFont, 25 )
+restore:addEventListener( "tap", function(event) store.restore() end )
